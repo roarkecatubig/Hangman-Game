@@ -1,18 +1,99 @@
 // VARIABLES
 var userGuesses = [];
-var gameWord =[];
-var splitWord = "KAMINO";
+var guessString;
+var gameArray =[];
+var splitCharWord = [];
+var blankSpaces = [];
+var strungWord;
+var brokenWord = []
 var wordBank = ["KAMINO", "TAKODANA", "KASHYYK"];
+var remainingGuesses = 12;
 
 
 // FUNCTIONS
-// This function splits up the words in the "wordBank" function and puts them into an array as individual characters. 
-function splitString(s) {
-    var brokenWord = s.split("");
-        //     for (i = 0; i <= sepBank)
-        // var gameWord = splitWord.split("");
-    console.log(brokenWord);
+// This function begins the main game.
+function beginGame() {
+    console.log("Game started")
+    randomWord();
+    splitString();
+    emptyBlanks();
+    guessRepeat();
+
 }
+
+function guessRepeat() {
+    document.onkeyup = function (event) {
+        var guess = String.fromCharCode(event.which).toUpperCase();
+        if (userGuesses.length === 0) {
+            userGuesses.push(guess);
+            guessesString = userGuesses.join();
+            console.log("userGuesses: " + userGuesses);
+            guessesCheck(guess);
+
+        }
+        else if (guessesString.includes(guess) === true) {
+            console.log("Letter already used.")
+            console.log("userGuesses: " + userGuesses)
+            console.log("guessesString: " + guessesString)
+        }
+
+        else {
+            userGuesses.push(guess);
+            guessesString = userGuesses.join()
+            console.log("userGuesses: " + userGuesses)
+            console.log("guessesString: " + guessesString)
+            guessesCheck(guess);
+        }
+    }
+
+}
+
+// This function randomly chooses a word for the game
+function randomWord() {
+    var random = wordBank[Math.floor(Math.random()*wordBank.length)];
+    gameArray.push(random);
+    console.log(random)
+}
+
+// This function splits up the words in the "wordBank" function and puts them into an array as individual characters. 
+function splitString() {
+    var s = gameArray[0];
+    splitCharWord = s.split("");
+    makeString(splitCharWord);
+    // var brokenWord = s.split("");
+    // console.log(brokenWord);
+}
+
+function makeString(splitCharWord) {
+    strungWord = splitCharWord.join()
+    console.log(strungWord);
+}
+
+function guessesCheck (guess) {
+    if (strungWord.includes(guess)) {
+
+    }
+}
+
+function emptyBlanks() {
+    for (i=0; i<splitCharWord.length; i++) {
+        blankSpaces[i] = "_";
+    }
+
+    console.log(blankSpaces)
+
+    blanksTogether = blankSpaces.join(" ");
+    document.getElementById("word-blanks").innerhTML = blanksTogether;
+}
+
+
+// function checkCharacter(guess) {
+//     for (i = 0; i < brokenWord.length(); i++)
+//         if (guess === brokenWord[i])
+
+// }
+
+
 
 function sliceArray(wordBank) {
     for (i = 0; i < wordBank.length; i++) {
@@ -21,6 +102,12 @@ function sliceArray(wordBank) {
     }
     console.log(wordBank.slice())
 }
+
+
+// This function creates blank spaces on the page equal to the number of items in the splitString array
+
+
+
 
 // function initHangman() {
 //     // Records all pressed keys 
@@ -66,8 +153,8 @@ function sliceArray(wordBank) {
 // }
 
 // MAIN PROCESS
-document.onkeyup = function(event) {
-    var guess = String.fromCharCode(event.which).toUpperCase();
-    userGuesses.push(guess)
-    console.log(userGuesses)
-}
+document.onkeyup = beginGame;
+    // var guess = String.fromCharCode(event.which).toUpperCase();
+    // userGuesses.push(guess)
+    // console.log(userGuesses)
+
