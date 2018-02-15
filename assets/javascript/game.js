@@ -1,18 +1,25 @@
 // VARIABLES
 var userGuesses = [];
+var incorrectGuesses = [];
 var guessString;
 var gameArray =[];
 var splitCharWord = [];
 var blankSpaces = [];
+var blanksTogether; 
 var strungWord;
 var brokenWord = []
 var wordBank = ["KAMINO", "TAKODANA", "KASHYYK"];
 var remainingGuesses = 12;
+var wins = 0;
+var losses = 0;
 
 // FUNCTIONS
 // This function begins the main game.
 function beginGame() {
     console.log("Game started")
+    userGuesses = [];
+    incorrectGuesses = [];
+    splitCharWord = [];
     randomWord();
     splitString();
     emptyBlanks();
@@ -23,33 +30,43 @@ function beginGame() {
 function guessRepeat() {
     document.onkeyup = function (event) {
         var guess = String.fromCharCode(event.which).toUpperCase();
+// This part accounts for the very first key press due to some errors of not recording the first guess. 
         if (userGuesses.length === 0) {
             userGuesses.push(guess);
             guessesString = userGuesses.join();
             console.log("userGuesses: " + userGuesses);
 
+            // If the guessed character is in the array, it'll do a further check to see what indexes the guessed character it's in.
             if (splitCharWord.includes(guess) === true) {
                 for (i = 0; i < splitCharWord.length; i++) {
                     if (guess === splitCharWord[i]) {
                         blankSpaces[i] = guess;
-                        console.log(blankSpaces)
-                        guessRepeat()
+                        var blanksTogether = blankSpaces.join(" ");
+                        document.querySelector("#word-blanks").innerHTML = blanksTogether;
+                        console.log(blankSpaces);
+                        winCondition();
                         } 
                     }              
             }
 
+            // If the guessed character is not in the array, it will subtract from remaining guesses and cycle back waiting for next input. 
             else {
                 remainingGuesses = remainingGuesses - 1;
-                console.log(remainingGuesses)
+                incorrectGuesses.push(guess);
+                console.log(remainingGuesses);
+                console.log("Wrong Guesses: " + incorrectGuesses);
+                winCondition();
             }
         }
-
+// This part accounts for if a letter has already been inputted into the game. 
         else if (guessesString.includes(guess) === true) {
             console.log("Letter already used.")
             console.log("userGuesses: " + userGuesses)
             console.log("guessesString: " + guessesString)
+            guessRepeat();
         }
 
+// This part accounts for guesses from the second guess onward. 
         else {
             userGuesses.push(guess);
             guessesString = userGuesses.join()
@@ -60,15 +77,20 @@ function guessRepeat() {
                 for (i = 0; i < splitCharWord.length; i++) {
                     if (guess === splitCharWord[i]) {
                         blankSpaces[i] = guess;
-                        console.log(blankSpaces)
-                        guessRepeat()
+                        var blanksTogether = blankSpaces.join(" ");
+                        document.querySelector("#word-blanks").innerHTML = blanksTogether;
+                        console.log(blankSpaces);
+                        winCondition();
                         } 
                     }              
             }
 
             else {
                 remainingGuesses = remainingGuesses - 1;
+                incorrectGuesses.push(guess);
                 console.log(remainingGuesses)
+                console.log("Wrong Guesses: " + incorrectGuesses);
+                winCondition();
             }
         }
     }
@@ -78,8 +100,20 @@ function guessRepeat() {
 // This function randomly chooses a word for the game
 function randomWord() {
     var random = wordBank[Math.floor(Math.random()*wordBank.length)];
-    gameArray.push(random);
-    console.log(random)
+    var index = wordBank.indexOf(random);
+    if (gameArray.length === 1) {
+        gameArray.splice(0,1);
+        gameArray.push(random);
+        wordBank.splice(index, 1);
+        console.log(random)
+    }
+
+    else if (gameArray.length === 0) {
+        gameArray.push(random);
+        wordBank.splice(index, 1);
+
+        console.log(random)
+    }
 }
 
 // This function splits up the words in the "wordBank" function and puts them into an array as individual characters. 
@@ -96,24 +130,8 @@ function makeString(splitCharWord) {
     console.log(strungWord);
 }
 
-function guessesCheck (guess) {
-    if (strungWord.includes(guess) === true) {
-        for (i = 0; i < strungWord.length; i++) {
-            if (guess === strungWord[i]) {
-                blankSpaces[i] = guess;
-                guessRepeat()
-            } 
-
-            else {
-                console.log(guess + " not in the word. Try again.")
-                remainingGuesses = remainingGuesses - 1;
-                guessRepeat()
-            }
-        }
-    }
-}
-
 function emptyBlanks() {
+    blankSpaces = [];
     for (i=0; i<splitCharWord.length; i++) {
         blankSpaces[i] = "_";
     }
@@ -121,17 +139,50 @@ function emptyBlanks() {
     console.log(blankSpaces)
 
     blanksTogether = blankSpaces.join(" ");
-    document.getElementById("word-blanks").innerhTML = blanksTogether;
+    document.querySelector("#word-blanks").innerHTML = blanksTogether;
 }
 
+function winCondition() {
+    if (blankSpaces.includes("_") === false) {
+        wins = wins + 1;
+        console.log("Number of wins: " + wins)
+        console.log ("Number of losses: " + losses)
+        console.log("YOU WIN!")
 
-// function checkCharacter(guess) {
-//     for (i = 0; i < brokenWord.length(); i++)
-//         if (guess === brokenWord[i])
+        if (wordBank.length > 0) {
+            console.log("---Press any key to begin a new game---")
+            document.onkeyup = beginGame;
+        }
 
-// }
+        else {
+            console.log("GAME OVER. No more words remaining.")
+        }
+    }
+
+    else if (blankSpaces.includes("_") === true && remainingGuesses === 0) {
+        losses = losses + 1; 
+        console.log("Number of wins: " + wins)
+        console.log ("Number of losses: " + losses)
+        console.log("DEFEATED")
+        console.log("You ran out of guesses.")
 
 
+        if (wordBank.length > 0) {
+            console.log("---Press any key to begin a new game---")
+            document.onkeyup = beginGame;
+        }
+
+        else {
+            console.log("GAME OVER. No more words remaining.")
+        }
+    }
+
+    else if (blankSpaces.includes("_" === true) && remainingGuesses > 0)  {
+        var blanksTogether = blankSpaces.join(" ");
+        document.querySelector("#word-blanks").innerHTML = blanksTogether;
+        guessRepeat();
+    }
+}
 
 function sliceArray(wordBank) {
     for (i = 0; i < wordBank.length; i++) {
@@ -141,58 +192,6 @@ function sliceArray(wordBank) {
     console.log(wordBank.slice())
 }
 
-
-// This function creates blank spaces on the page equal to the number of items in the splitString array
-
-
-
-
-// function initHangman() {
-//     // Records all pressed keys 
-
-//     // Checks if inputted character is in the word
-
-//         // Based on the check, number of guesses goes down OR letter is revealed
-    
-//     // Game completes scenarios
-
-// }
-
-// This function checks to see if inputed character is in the array.
-// function checkArray (guess) {
-    
-//     // Based on the character:
-
-//     // If character is not in the array, push the character to the array.
-//     for (var i = 0; i<userGuesses.length; i++) {
-//         if (userGuesses[i] === guess) {
-//             userGuesses.push(guess);
-//             userGuesses.pop();
-//             console.log("Value already in array.")
-//         }
-
-//         else {
-//             userGuesses.push(guess);
-//         }
-
-//     }
-// }
-
-// If character is in the array, does not push character into the array.
-
-// }
-
-// This function checks the win conditionals
-// function ???? () {
-
-//         // Conditional if guesses left = 0
-
-//         // Conditional if all letters in mystery word are revealed
-// }
-
 // MAIN PROCESS
 document.onkeyup = beginGame;
-    // var guess = String.fromCharCode(event.which).toUpperCase();
-    // userGuesses.push(guess)
-    // console.log(userGuesses)
 
