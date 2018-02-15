@@ -9,7 +9,6 @@ var brokenWord = []
 var wordBank = ["KAMINO", "TAKODANA", "KASHYYK"];
 var remainingGuesses = 12;
 
-
 // FUNCTIONS
 // This function begins the main game.
 function beginGame() {
@@ -28,9 +27,23 @@ function guessRepeat() {
             userGuesses.push(guess);
             guessesString = userGuesses.join();
             console.log("userGuesses: " + userGuesses);
-            guessesCheck(guess);
 
+            if (splitCharWord.includes(guess) === true) {
+                for (i = 0; i < splitCharWord.length; i++) {
+                    if (guess === splitCharWord[i]) {
+                        blankSpaces[i] = guess;
+                        console.log(blankSpaces)
+                        guessRepeat()
+                        } 
+                    }              
+            }
+
+            else {
+                remainingGuesses = remainingGuesses - 1;
+                console.log(remainingGuesses)
+            }
         }
+
         else if (guessesString.includes(guess) === true) {
             console.log("Letter already used.")
             console.log("userGuesses: " + userGuesses)
@@ -42,10 +55,24 @@ function guessRepeat() {
             guessesString = userGuesses.join()
             console.log("userGuesses: " + userGuesses)
             console.log("guessesString: " + guessesString)
-            guessesCheck(guess);
+            
+            if (splitCharWord.includes(guess) === true) {
+                for (i = 0; i < splitCharWord.length; i++) {
+                    if (guess === splitCharWord[i]) {
+                        blankSpaces[i] = guess;
+                        console.log(blankSpaces)
+                        guessRepeat()
+                        } 
+                    }              
+            }
+
+            else {
+                remainingGuesses = remainingGuesses - 1;
+                console.log(remainingGuesses)
+            }
         }
     }
-
+       
 }
 
 // This function randomly chooses a word for the game
@@ -65,13 +92,24 @@ function splitString() {
 }
 
 function makeString(splitCharWord) {
-    strungWord = splitCharWord.join()
+    strungWord = splitCharWord.join("");
     console.log(strungWord);
 }
 
 function guessesCheck (guess) {
-    if (strungWord.includes(guess)) {
+    if (strungWord.includes(guess) === true) {
+        for (i = 0; i < strungWord.length; i++) {
+            if (guess === strungWord[i]) {
+                blankSpaces[i] = guess;
+                guessRepeat()
+            } 
 
+            else {
+                console.log(guess + " not in the word. Try again.")
+                remainingGuesses = remainingGuesses - 1;
+                guessRepeat()
+            }
+        }
     }
 }
 
