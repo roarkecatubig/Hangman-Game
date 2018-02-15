@@ -8,17 +8,23 @@ var blankSpaces = [];
 var blanksTogether; 
 var strungWord;
 var brokenWord = []
-var wordBank = ["KAMINO", "TAKODANA", "KASHYYK"];
+var wordBank = ["KAMINO", "TAKODANA", "KASHYYK", "NABOO", "JAKKU", "ENDOR", "HOTH", "TATOOINE", "CRAIT"];
 var remainingGuesses = 12;
 var wins = 0;
 var losses = 0;
+var turnCount = 0;
 
 // FUNCTIONS
 // This function begins the main game.
 function beginGame() {
     console.log("Game started")
+    document.querySelector("#game-prompts").innerHTML = "NEW GAME STARTED";
+    turnCount = 0;
+    remainingGuesses = 12;
     userGuesses = [];
     incorrectGuesses = [];
+    document.querySelector("#wrong-guesses").innerHTML = incorrectGuesses;
+    document.querySelector("#guesses-left").innerHTML = remainingGuesses;
     splitCharWord = [];
     randomWord();
     splitString();
@@ -29,6 +35,7 @@ function beginGame() {
 
 function guessRepeat() {
     document.onkeyup = function (event) {
+        turnCount = turnCount + 1;
         var guess = String.fromCharCode(event.which).toUpperCase();
 // This part accounts for the very first key press due to some errors of not recording the first guess. 
         if (userGuesses.length === 0) {
@@ -44,6 +51,7 @@ function guessRepeat() {
                         var blanksTogether = blankSpaces.join(" ");
                         document.querySelector("#word-blanks").innerHTML = blanksTogether;
                         console.log(blankSpaces);
+                        document.querySelector("#game-prompts").innerHTML = "TURN " + turnCount + ": YOU'RE GETTING CLOSER. KEEP GOING";
                         winCondition();
                         } 
                     }              
@@ -55,12 +63,16 @@ function guessRepeat() {
                 incorrectGuesses.push(guess);
                 console.log(remainingGuesses);
                 console.log("Wrong Guesses: " + incorrectGuesses);
+                document.querySelector("#game-prompts").innerHTML = "TURN " + turnCount + ": WRONG GUESS. TRY AGAIN";
+                document.querySelector("#wrong-guesses").innerHTML = incorrectGuesses;
+                document.querySelector("#guesses-left").innerHTML = remainingGuesses;
                 winCondition();
             }
         }
 // This part accounts for if a letter has already been inputted into the game. 
         else if (guessesString.includes(guess) === true) {
             console.log("Letter already used.")
+            document.querySelector("#game-prompts").innerHTML = "TURN " + turnCount + ": YOU ALREADY USED THAT LETTER. TRY AGAIN";
             console.log("userGuesses: " + userGuesses)
             console.log("guessesString: " + guessesString)
             guessRepeat();
@@ -78,6 +90,7 @@ function guessRepeat() {
                     if (guess === splitCharWord[i]) {
                         blankSpaces[i] = guess;
                         var blanksTogether = blankSpaces.join(" ");
+                        document.querySelector("#game-prompts").innerHTML = "TURN " + turnCount + ": YOU'RE GETTING CLOSER. KEEP GOING";
                         document.querySelector("#word-blanks").innerHTML = blanksTogether;
                         console.log(blankSpaces);
                         winCondition();
@@ -90,6 +103,9 @@ function guessRepeat() {
                 incorrectGuesses.push(guess);
                 console.log(remainingGuesses)
                 console.log("Wrong Guesses: " + incorrectGuesses);
+                document.querySelector("#game-prompts").innerHTML = "TURN " + turnCount + ": WRONG GUESS. TRY AGAIN";
+                document.querySelector("#wrong-guesses").innerHTML = incorrectGuesses;
+                document.querySelector("#guesses-left").innerHTML = remainingGuesses;
                 winCondition();
             }
         }
@@ -145,9 +161,11 @@ function emptyBlanks() {
 function winCondition() {
     if (blankSpaces.includes("_") === false) {
         wins = wins + 1;
+        document.querySelector("#win-counter").innerHTML = wins;
         console.log("Number of wins: " + wins)
         console.log ("Number of losses: " + losses)
         console.log("YOU WIN!")
+        document.querySelector("#game-prompts").innerHTML = "YOU WIN! Press any key to begin a new game";
 
         if (wordBank.length > 0) {
             console.log("---Press any key to begin a new game---")
@@ -156,15 +174,18 @@ function winCondition() {
 
         else {
             console.log("GAME OVER. No more words remaining.")
+            document.querySelector("#game-prompts").innerHTML = "GAME OVER! THANKS FOR PLAYING!";
         }
     }
 
     else if (blankSpaces.includes("_") === true && remainingGuesses === 0) {
-        losses = losses + 1; 
+        losses = losses + 1;
+        document.querySelector("#loss-counter").innerHTML = losses; 
         console.log("Number of wins: " + wins)
         console.log ("Number of losses: " + losses)
         console.log("DEFEATED")
         console.log("You ran out of guesses.")
+        document.querySelector("#game-prompts").innerHTML = "YOU LOSE! Press any key to begin a new game";
 
 
         if (wordBank.length > 0) {
