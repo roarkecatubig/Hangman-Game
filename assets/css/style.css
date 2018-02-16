@@ -1,3 +1,16 @@
 body {
-    background-image: url("../images/starwars.jpg")
+    background-image: url("../images/starwars.jpg");
+    background-repeat: no-repeat;
+}
+
+.container {
+    opacity: 0.9;
+}
+
+h1, #word-blanks, #word-header, strong{
+    font-family: 'Ubuntu', sans-serif;
+}
+
+h2, h3 {
+    font-family: 'Nunito', sans-serif;
 }
