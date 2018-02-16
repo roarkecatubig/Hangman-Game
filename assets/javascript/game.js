@@ -43,7 +43,7 @@ function guessRepeat() {
             guessesString = userGuesses.join();
             console.log("userGuesses: " + userGuesses);
 
-            // If the guessed character is in the array, it'll do a further check to see what indexes the guessed character it's in.
+// If the guessed character is in the array, it'll do a further check to see what indexes the guessed character it's in.
             if (splitCharWord.includes(guess) === true) {
                 for (i = 0; i < splitCharWord.length; i++) {
                     if (guess === splitCharWord[i]) {
@@ -57,7 +57,7 @@ function guessRepeat() {
                     }              
             }
 
-            // If the guessed character is not in the array, it will subtract from remaining guesses and cycle back waiting for next input. 
+// If the guessed character is not in the array, it will subtract from remaining guesses and cycle back waiting for next input. 
             else {
                 remainingGuesses = remainingGuesses - 1;
                 incorrectGuesses.push(guess);
@@ -97,7 +97,7 @@ function guessRepeat() {
                         } 
                     }              
             }
-
+// If the letter is not in the array, subtract remaining guesses.
             else {
                 remainingGuesses = remainingGuesses - 1;
                 incorrectGuesses.push(guess);
@@ -137,8 +137,6 @@ function splitString() {
     var s = gameArray[0];
     splitCharWord = s.split("");
     makeString(splitCharWord);
-    // var brokenWord = s.split("");
-    // console.log(brokenWord);
 }
 
 function makeString(splitCharWord) {
@@ -146,6 +144,7 @@ function makeString(splitCharWord) {
     console.log(strungWord);
 }
 
+// Creates the same number of empty blanks as the number of characters in the word.  
 function emptyBlanks() {
     blankSpaces = [];
     for (i=0; i<splitCharWord.length; i++) {
@@ -158,6 +157,7 @@ function emptyBlanks() {
     document.querySelector("#word-blanks").innerHTML = blanksTogether;
 }
 
+// Checks the game status to check if a win/lose condition is met. 
 function winCondition() {
     if (blankSpaces.includes("_") === false) {
         wins = wins + 1;
@@ -203,14 +203,6 @@ function winCondition() {
         document.querySelector("#word-blanks").innerHTML = blanksTogether;
         guessRepeat();
     }
-}
-
-function sliceArray(wordBank) {
-    for (i = 0; i < wordBank.length; i++) {
-        var sepBank = wordBank.slice();
-        splitString(sepBank[i])
-    }
-    console.log(wordBank.slice())
 }
 
 // MAIN PROCESS
